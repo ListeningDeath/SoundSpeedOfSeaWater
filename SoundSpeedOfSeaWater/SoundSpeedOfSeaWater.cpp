@@ -7,14 +7,14 @@ Q_DECLARE_METATYPE(Formula*);
 QList<Formula*> g_formulaList;
 QPalette WARNING_COLOR, NORMAL_COLOR;
 
-double formulaCoppens(double temp, double salt, double depth)
-{
-	temp /= 10;
-	depth /= 1000;
-	double C = 1449.05 + 45.7 * temp - 5.21 * pow(temp, 2) + 0.23 * pow(temp, 3) + (1.333 - 0.126 * temp + 0.009 * pow(temp, 2)) * (salt - 35);
-	C += (16.23 + 0.253 * temp) * depth + (0.213 - 0.1 * temp) * pow(depth, 2) + (0.016 + 0.0002 * (salt - 35)) * (salt - 35) * temp * depth;
-	return C;
-}
+//double formulaCoppens(double temp, double salt, double depth)
+//{
+//	temp /= 10;
+//	depth /= 1000;
+//	double C = 1449.05 + 45.7 * temp - 5.21 * pow(temp, 2) + 0.23 * pow(temp, 3) + (1.333 - 0.126 * temp + 0.009 * pow(temp, 2)) * (salt - 35);
+//	C += (16.23 + 0.253 * temp) * depth + (0.213 - 0.1 * temp) * pow(depth, 2) + (0.016 + 0.0002 * (salt - 35)) * (salt - 35) * temp * depth;
+//	return C;
+//}
 
 void SoundSpeedOfSeaWater::LoadFormulas()
 {
@@ -25,7 +25,14 @@ void SoundSpeedOfSeaWater::LoadFormulas()
 	fCoppens->SetSaltU(42);
 	fCoppens->SetDepthL(0);
 	fCoppens->SetDepthU(4000);
-	fCoppens->SetFormula(formulaCoppens);
+	fCoppens->SetFormula([](double t, double s, double d) 
+							{
+								t /= 10;
+								d /= 1000;
+								double C = 1449.05 + 45.7 * t - 5.21 * pow(t, 2) + 0.23 * pow(t, 3) + (1.333 - 0.126 * t + 0.009 * pow(t, 2)) * (s - 35);
+								C += (16.23 + 0.253 * t) * d + (0.213 - 0.1 * t) * pow(d, 2) + (0.016 + 0.0002 * (s - 35)) * (s - 35) * t * d;
+								return C;
+							});
 	g_formulaList.append(fCoppens);
 }
 
